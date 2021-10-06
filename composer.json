@@ -1,8 +1,15 @@
 {
-    "name": "moave/phpspec-data-provider-extension",
+    "name": "dborsatto/phpspec-data-provider-extension",
     "type": "library",
-    "keywords": ["phpspec", "dataprovider", "extension", "coduo", "data", "provider"],
-    "license": "MIT", 
+    "description": "Data provider extension for PHPSpec 7+",
+    "keywords": [
+        "phpspec",
+        "dataprovider",
+        "extension",
+        "data",
+        "provider"
+    ],
+    "license": "MIT",
     "authors": [
         {
             "name": "Norbert Orzechowicz",
@@ -11,28 +18,46 @@
         {
             "name": "Michał Dąbrowski",
             "email": "dabrowski@brillante.pl"
+        },
+        {
+            "name": "Davide Borsatto",
+            "email": "davide.borsatto@gmail.com"
         }
     ],
     "require": {
-        "php": "^7.0",
-        "phpspec/phpspec": "6.*"
+        "php": "^7.4 || ^8.0",
+        "phpspec/phpspec": "^7.0"
     },
     "require-dev": {
-        "behat/behat": "^3.1",
-        "symfony/filesystem": "^3.1",
-        "symfony/process": "^3.1",
-        "symfony/console": "^3.1",
-        "bossa/phpspec2-expect": "^3.0"
-    },
-    "autoload": {
-        "psr-0": { "Coduo\\PhpSpec": "src/"}
+        "ergebnis/composer-normalize": "^2.15",
+        "symfony/console": "^5.0 || ^6.0",
+        "symfony/filesystem": "^5.0 || ^6.0",
+        "symfony/process": "^5.0 || ^6.0"
     },
     "config": {
-        "bin-dir": "bin"
+        "sort-packages": false
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.1-dev"
+    "autoload": {
+        "psr-4": {
+            "DBorsatto\\PhpSpec\\DataProvider\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "spec\\": "spec/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "curl https://cs.symfony.com/download/php-cs-fixer-v3.phar > php-cs-fixer-v3.phar",
+            "chmod 700 php-cs-fixer-v3.phar"
+        ],
+        "tests": [
+            "Composer\\Config::disableProcessTimeout",
+            "phpspec run"
+        ],
+        "fix-style": [
+            "php php-cs-fixer-v3.phar fix"
+        ]
     }
 }

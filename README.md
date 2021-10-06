@@ -1,22 +1,20 @@
-#PhpSpec data provider extension
+# PhpSpec data provider extension
 
-[![Build Status](https://travis-ci.org/coduo/phpspec-data-provider-extension.svg?branch=master)](https://travis-ci.org/coduo/phpspec-data-provider-extension)
-
-This extension allows you to create data providers for examples in specs.
+This extension allows you to create data providers for examples in specs. It is a fork of [madisoft/phpspec-data-provider-extension](https://github.com/madisoft/phpspec-data-provider-extension/tree/master), which is the final fork from a series started from [coduo/phpspec-data-provider-extension](https://github.com/coduo/phpspec-data-provider-extension). 
 
 ## Installation
 
-```shell
-composer require coduo/phpspec-data-provider-extension
+```bash
+composer require dborsatto/phpspec-data-provider-extension
 ```
 
 ## Usage
 
-Enable extension in phpspec.yml file
+Enable extension in your `phpspec.yml` file:
 
 ```
 extensions:
-  Coduo\PhpSpec\DataProvider\DataProviderExtension: ~
+  DBorsatto\PhpSpec\DataProvider\DataProviderExtension: ~
 ```
 
 Write a spec:
@@ -24,39 +22,44 @@ Write a spec:
 ```php
 <?php
 
-namespace spec\Coduo\ToString;
+declare(strict_types=1);
+
+namespace spec\DBorsatto\ToString;
 
 use PhpSpec\ObjectBehavior;
 
 class StringLibrarySpec extends ObjectBehavior
 {
     /**
-     *  @dataProvider positiveConversionExamples
+     * @dataProvider positiveConversionExamples
      */
-    function it_convert_input_value_into_string($inputValue, $expectedValue)
+    public function it_convert_input_value_into_string($inputValue, $expectedValue): void
     {
         $this->beConstructedWith($inputValue);
-        $this->__toString()->shouldReturn($expectedValue);
+        $this->__toString()
+            ->shouldReturn($expectedValue);
     }
 
-    public function positiveConversionExamples()
+    public function positiveConversionExamples(): array
     {
-        return array(
-            array(1, '1'),
-            array(1.1, '1.1'),
-            array(new \DateTime, '\DateTime'),
-            array(array('foo', 'bar'), 'Array(2)')
-        );
+        return [
+            [1, '1'],
+            [1.1, '1.1'],
+            [new \DateTime, '\DateTime'],
+            [['foo', 'bar'], 'Array(2)']
+        ];
     }
 }
 ```
 
-Write class for spec:
+Write the class for your spec:
 
 ```php
 <?php
 
-namespace Coduo\ToString;
+declare(strict_types=1);
+
+namespace DBorsatto\ToString;
 
 class StringLibrary
 {
@@ -67,7 +70,7 @@ class StringLibrary
         $this->value = $value;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $type = gettype($this->value);
         switch ($type) {
@@ -82,16 +85,16 @@ class StringLibrary
 }
 ```
 
-Run php spec
+Run phpspec
 
 ```
-$ console bin/phpspec run -f pretty
+$ vendor/bin/phpspec run -f pretty
 ```
 
 You should get following output:
 
 ```
-Coduo\ToString\String
+DBorsatto\ToString\String
 
   12  ✔ convert input value into string
   12  ✔ 1) it convert input value into string
