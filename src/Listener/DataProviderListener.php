@@ -7,6 +7,7 @@ namespace DBorsatto\PhpSpec\DataProvider\Listener;
 use DBorsatto\PhpSpec\DataProvider\Annotation\Parser;
 use PhpSpec\Event\SpecificationEvent;
 use PhpSpec\Loader\Node\ExampleNode;
+use ReflectionMethod;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use function is_array;
 
@@ -23,6 +24,11 @@ class DataProviderListener implements EventSubscriberInterface
     {
         $examplesToAdd = [];
         foreach ($event->getSpecification()->getExamples() as $example) {
+            $functionReflection = $example->getFunctionReflection();
+            if (!$functionReflection instanceof ReflectionMethod) {
+                continue;
+            }
+
             $dataProviderMethod = Parser::getDataProvider($example->getFunctionReflection());
             if ($dataProviderMethod === null) {
                 continue;
@@ -49,7 +55,7 @@ class DataProviderListener implements EventSubscriberInterface
             foreach ($providedData as $index => $dataRow) {
                 $examplesToAdd[] = new ExampleNode(
                     $index + 1 . ') ' . $example->getTitle(),
-                    $example->getFunctionReflection()
+                    $functionReflection
                 );
             }
         }
