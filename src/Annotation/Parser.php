@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DBorsatto\PhpSpec\DataProvider\Annotation;
 
 use ReflectionMethod;
+use function preg_match;
 
 class Parser
 {

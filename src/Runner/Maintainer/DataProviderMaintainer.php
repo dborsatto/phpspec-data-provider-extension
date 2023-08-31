@@ -14,10 +14,11 @@ use PhpSpec\Specification;
 use ReflectionMethod;
 use function array_key_exists;
 use function is_array;
+use function preg_match;
 
 class DataProviderMaintainer implements Maintainer
 {
-    public const EXAMPLE_NUMBER_PATTERN = '/^(\d+)\)/';
+    private const EXAMPLE_NUMBER_PATTERN = '/^(\d+)\)/';
 
     public function supports(ExampleNode $example): bool
     {
@@ -27,6 +28,7 @@ class DataProviderMaintainer implements Maintainer
         }
 
         foreach ($valuesCollection as $values) {
+            /** @psalm-suppress DocblockTypeContradiction */
             if (!is_array($values)) {
                 return false;
             }
@@ -41,23 +43,24 @@ class DataProviderMaintainer implements Maintainer
         MatcherManager $matchers,
         CollaboratorManager $collaborators
     ): void {
-        $exampleNum = $this->getExampleNumber($example);
+        $exampleNumber = $this->getExampleNumber($example);
         $providedData = $this->getDataFromProvider($example);
         if ($providedData === null) {
             return;
         }
 
-        if (!array_key_exists($exampleNum, $providedData)) {
+        if (!array_key_exists($exampleNumber, $providedData)) {
             return;
         }
 
-        $data = $providedData[$exampleNum];
-
-        foreach ($example->getFunctionReflection()->getParameters() as $position => $parameter) {
+        $data = $providedData[$exampleNumber];
+        $function = $example->getFunctionReflection();
+        foreach ($function->getParameters() as $position => $parameter) {
             if (!array_key_exists($position, $data)) {
                 continue;
             }
 
+            /** @psalm-suppress MixedArgument */
             $collaborators->set($parameter->getName(), $data[$position]);
         }
     }
@@ -75,6 +78,9 @@ class DataProviderMaintainer implements Maintainer
         return 50;
     }
 
+    /**
+     * @return list<list<mixed>>|null
+     */
     private function getDataFromProvider(ExampleNode $node): ?array
     {
         $functionReflection = $node->getFunctionReflection();
@@ -92,20 +98,21 @@ class DataProviderMaintainer implements Maintainer
             return null;
         }
 
-        $reflection = $specification->getClassReflection();
-
-        if (!$reflection->hasMethod($dataProviderMethod)) {
+        $classReflection = $specification->getClassReflection();
+        if (!$classReflection->hasMethod($dataProviderMethod)) {
             return null;
         }
 
         try {
-            $subject = $reflection->newInstance();
-            $providedData = $reflection->getMethod($dataProviderMethod)
+            $subject = $classReflection->newInstance();
+            /** @var list<list<mixed>> $providedData */
+            $providedData = $classReflection->getMethod($dataProviderMethod)
                 ->invoke($subject);
         } catch (Exception $exception) {
             return null;
         }
 
+        /** @psalm-suppress RedundantConditionGivenDocblockType, DocblockTypeContradiction */
         return is_array($providedData) ? $providedData : null;
     }
 
