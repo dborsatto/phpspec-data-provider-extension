@@ -16,26 +16,22 @@ class DataProviderListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            'beforeSpecification' => ['beforeSpecification'],
+            'beforeSpecification' => ['handle'],
         ];
     }
 
-    public function beforeSpecification(SpecificationEvent $event): void
+    public function handle(SpecificationEvent $event): void
     {
         $examplesToAdd = [];
-        foreach ($event->getSpecification()->getExamples() as $example) {
+        $specification = $event->getSpecification();
+        foreach ($specification->getExamples() as $example) {
             $functionReflection = $example->getFunctionReflection();
             if (!$functionReflection instanceof ReflectionMethod) {
                 continue;
             }
 
-            $dataProviderMethod = Parser::getDataProvider($example->getFunctionReflection());
+            $dataProviderMethod = Parser::getDataProvider($functionReflection);
             if ($dataProviderMethod === null) {
-                continue;
-            }
-
-            $specification = $example->getSpecification();
-            if ($specification === null) {
                 continue;
             }
 
@@ -52,16 +48,17 @@ class DataProviderListener implements EventSubscriberInterface
                 continue;
             }
 
+            /** @var list<list<mixed>> $providedData */
             foreach ($providedData as $index => $dataRow) {
                 $examplesToAdd[] = new ExampleNode(
                     $index + 1 . ') ' . $example->getTitle(),
-                    $functionReflection
+                    $functionReflection,
                 );
             }
         }
 
         foreach ($examplesToAdd as $example) {
-            $event->getSpecification()->addExample($example);
+            $specification->addExample($example);
         }
     }
 }

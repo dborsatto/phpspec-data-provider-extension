@@ -30,12 +30,17 @@
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.15",
+        "friendsofphp/php-cs-fixer": "^3.24",
         "symfony/console": "^5.0 || ^6.0",
         "symfony/filesystem": "^5.0 || ^6.0",
-        "symfony/process": "^5.0 || ^6.0"
+        "symfony/process": "^5.0 || ^6.0",
+        "vimeo/psalm": "^5.15"
     },
     "config": {
-        "sort-packages": false
+        "sort-packages": true,
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        }
     },
     "autoload": {
         "psr-4": {
@@ -48,16 +53,12 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
-            "curl https://cs.symfony.com/download/php-cs-fixer-v3.phar > php-cs-fixer-v3.phar",
-            "chmod 700 php-cs-fixer-v3.phar"
-        ],
         "tests": [
             "Composer\\Config::disableProcessTimeout",
             "phpspec run"
         ],
         "fix-style": [
-            "php php-cs-fixer-v3.phar fix"
+            "@php php-cs-fixer fix"
         ]
     }
 }

@@ -1,4 +1,6 @@
-/.github        export-ignore
+/.github export-ignore
 /.gitattributes export-ignore
-/.gitignore     export-ignore
-/spec           export-ignore
+/.gitignore export-ignore
+/spec export-ignore
+/.php-cs-fixer.php export-ignore
+/psalm.xml export-ignore
