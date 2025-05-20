@@ -10,17 +10,18 @@ $finder = PhpCsFixer\Finder::create()
     ]);
 
 $config = new PhpCsFixer\Config();
+$config->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect());
 
 return $config->setFinder($finder)
     ->setUsingCache(false)
     ->setRiskyAllowed(true)
     ->setRules([
-        '@PER' => true,
+        '@PER-CS' => true,
         '@DoctrineAnnotation' => true,
         '@PhpCsFixer' => true,
         '@Symfony' => true,
-        '@PHP74Migration' => true,
-        'blank_line_between_import_groups' => false,
+        '@PHP83Migration' => true,
+        'attribute_empty_parentheses' => false,
         'concat_space' => [
             'spacing' => 'one',
         ],
@@ -32,7 +33,9 @@ return $config->setFinder($finder)
             'import_constants' => true,
             'import_functions' => true,
         ],
-        'increment_style' => ['style' => 'post'],
+        'increment_style' => [
+            'style' => 'post',
+        ],
         'is_null' => true,
         'list_syntax' => true,
         'logical_operators' => true,
@@ -43,7 +46,9 @@ return $config->setFinder($finder)
         ],
         'native_constant_invocation' => true,
         'native_function_invocation' => [
-            'include' => ['@all'],
+            'include' => [
+                '@all',
+            ],
         ],
         'no_null_property_initialization' => false,
         'no_superfluous_phpdoc_tags' => [
@@ -51,6 +56,7 @@ return $config->setFinder($finder)
             'allow_unused_params' => false,
             'remove_inheritdoc' => true,
         ],
+        'no_trailing_whitespace_in_string' => true,
         'no_unused_imports' => true,
         'no_useless_sprintf' => true,
         'nullable_type_declaration_for_default_null_value' => false,
@@ -70,7 +76,11 @@ return $config->setFinder($finder)
             'sort_algorithm' => 'none',
         ],
         'ordered_imports' => [
-            'imports_order' => ['class', 'function', 'const'],
+            'imports_order' => [
+                'class',
+                'function',
+                'const',
+            ],
             'sort_algorithm' => 'alpha',
         ],
         'ordered_traits' => true,
@@ -94,14 +104,18 @@ return $config->setFinder($finder)
         'phpdoc_separation' => false,
         'phpdoc_to_comment' => false,
         'self_accessor' => true,
+        'string_implicit_backslashes' => false,
         'single_line_empty_body' => false,
         'single_line_throw' => false,
         'string_length_to_empty' => true,
         'trailing_comma_in_multiline' => [
             'after_heredoc' => true,
             'elements' => [
-                'arrays',
                 'arguments',
+                'arrays',
+                'array_destructuring',
+                'match',
+                'parameters',
             ],
         ],
         'yoda_style' => [

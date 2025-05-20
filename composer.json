@@ -25,16 +25,16 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "8.3.*",
         "phpspec/phpspec": "^7.0"
     },
     "require-dev": {
-        "ergebnis/composer-normalize": "^2.15",
-        "friendsofphp/php-cs-fixer": "^3.24",
+        "ergebnis/composer-normalize": "^2.47",
+        "friendsofphp/php-cs-fixer": "^3.75",
         "symfony/console": "^5.0 || ^6.0",
         "symfony/filesystem": "^5.0 || ^6.0",
         "symfony/process": "^5.0 || ^6.0",
-        "vimeo/psalm": "^5.15"
+        "vimeo/psalm": "^6.10"
     },
     "config": {
         "sort-packages": true,

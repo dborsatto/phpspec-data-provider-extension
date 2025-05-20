@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace DBorsatto\PhpSpec\DataProvider\Annotation;
 
 use ReflectionMethod;
+
 use function preg_match;
 
-class Parser
+final class Parser
 {
-    private const DATA_PROVIDER_PATTERN = '/@dataProvider ([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/';
+    private const string DATA_PROVIDER_PATTERN = '/@dataProvider ([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/';
 
     public static function getDataProvider(ReflectionMethod $reflection): ?string
     {
