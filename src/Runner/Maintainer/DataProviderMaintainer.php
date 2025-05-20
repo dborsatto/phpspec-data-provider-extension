@@ -6,20 +6,23 @@ namespace DBorsatto\PhpSpec\DataProvider\Runner\Maintainer;
 
 use DBorsatto\PhpSpec\DataProvider\Annotation\Parser;
 use Exception;
+use Override;
 use PhpSpec\Loader\Node\ExampleNode;
 use PhpSpec\Runner\CollaboratorManager;
 use PhpSpec\Runner\Maintainer\Maintainer;
 use PhpSpec\Runner\MatcherManager;
 use PhpSpec\Specification;
 use ReflectionMethod;
+
 use function array_key_exists;
 use function is_array;
 use function preg_match;
 
-class DataProviderMaintainer implements Maintainer
+final class DataProviderMaintainer implements Maintainer
 {
-    private const EXAMPLE_NUMBER_PATTERN = '/^(\d+)\)/';
+    private const string EXAMPLE_NUMBER_PATTERN = '/^(\d+)\)/';
 
+    #[Override]
     public function supports(ExampleNode $example): bool
     {
         $valuesCollection = $this->getDataFromProvider($example);
@@ -37,11 +40,12 @@ class DataProviderMaintainer implements Maintainer
         return true;
     }
 
+    #[Override]
     public function prepare(
         ExampleNode $example,
         Specification $context,
         MatcherManager $matchers,
-        CollaboratorManager $collaborators
+        CollaboratorManager $collaborators,
     ): void {
         $exampleNumber = $this->getExampleNumber($example);
         $providedData = $this->getDataFromProvider($example);
@@ -65,14 +69,16 @@ class DataProviderMaintainer implements Maintainer
         }
     }
 
+    #[Override]
     public function teardown(
         ExampleNode $example,
         Specification $context,
         MatcherManager $matchers,
-        CollaboratorManager $collaborators
+        CollaboratorManager $collaborators,
     ): void {
     }
 
+    #[Override]
     public function getPriority(): int
     {
         return 50;

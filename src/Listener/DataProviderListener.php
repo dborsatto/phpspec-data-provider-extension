@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace DBorsatto\PhpSpec\DataProvider\Listener;
 
 use DBorsatto\PhpSpec\DataProvider\Annotation\Parser;
+use Override;
 use PhpSpec\Event\SpecificationEvent;
 use PhpSpec\Loader\Node\ExampleNode;
 use ReflectionMethod;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 use function is_array;
 
-class DataProviderListener implements EventSubscriberInterface
+final class DataProviderListener implements EventSubscriberInterface
 {
+    #[Override]
     public static function getSubscribedEvents(): array
     {
         return [
