@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace DBorsatto\PhpSpec\DataProvider\Runner\Maintainer;
 
-use DBorsatto\PhpSpec\DataProvider\Annotation\Parser;
-use Exception;
+use DBorsatto\PhpSpec\DataProvider\AnnotationExtractor;
 use Override;
 use PhpSpec\Loader\Node\ExampleNode;
 use PhpSpec\Runner\CollaboratorManager;
 use PhpSpec\Runner\Maintainer\Maintainer;
 use PhpSpec\Runner\MatcherManager;
 use PhpSpec\Specification;
-use ReflectionMethod;
 
 use function array_key_exists;
-use function is_array;
 use function preg_match;
 
 final class DataProviderMaintainer implements Maintainer
@@ -25,19 +22,10 @@ final class DataProviderMaintainer implements Maintainer
     #[Override]
     public function supports(ExampleNode $example): bool
     {
-        $valuesCollection = $this->getDataFromProvider($example);
-        if ($valuesCollection === null) {
-            return false;
-        }
+        $annotationExtractor = new AnnotationExtractor();
+        $providedData = $annotationExtractor->extract($example);
 
-        foreach ($valuesCollection as $values) {
-            /** @psalm-suppress DocblockTypeContradiction */
-            if (!is_array($values)) {
-                return false;
-            }
-        }
-
-        return true;
+        return $providedData !== null;
     }
 
     #[Override]
@@ -48,7 +36,8 @@ final class DataProviderMaintainer implements Maintainer
         CollaboratorManager $collaborators,
     ): void {
         $exampleNumber = $this->getExampleNumber($example);
-        $providedData = $this->getDataFromProvider($example);
+        $annotationExtractor = new AnnotationExtractor();
+        $providedData = $annotationExtractor->extract($example);
         if ($providedData === null) {
             return;
         }
@@ -82,44 +71,6 @@ final class DataProviderMaintainer implements Maintainer
     public function getPriority(): int
     {
         return 50;
-    }
-
-    /**
-     * @return list<list<mixed>>|null
-     */
-    private function getDataFromProvider(ExampleNode $node): ?array
-    {
-        $functionReflection = $node->getFunctionReflection();
-        if (!$functionReflection instanceof ReflectionMethod) {
-            return null;
-        }
-
-        $dataProviderMethod = Parser::getDataProvider($functionReflection);
-        if (!isset($dataProviderMethod)) {
-            return null;
-        }
-
-        $specification = $node->getSpecification();
-        if ($specification === null) {
-            return null;
-        }
-
-        $classReflection = $specification->getClassReflection();
-        if (!$classReflection->hasMethod($dataProviderMethod)) {
-            return null;
-        }
-
-        try {
-            $subject = $classReflection->newInstance();
-            /** @var list<list<mixed>> $providedData */
-            $providedData = $classReflection->getMethod($dataProviderMethod)
-                ->invoke($subject);
-        } catch (Exception $exception) {
-            return null;
-        }
-
-        /** @psalm-suppress RedundantConditionGivenDocblockType, DocblockTypeContradiction */
-        return is_array($providedData) ? $providedData : null;
     }
 
     private function getExampleNumber(ExampleNode $node): int

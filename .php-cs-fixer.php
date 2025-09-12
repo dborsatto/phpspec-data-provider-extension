@@ -5,7 +5,6 @@ declare(strict_types=1);
 $finder = PhpCsFixer\Finder::create()
     ->name('*.php')
     ->in([
-        __DIR__ . '/spec',
         __DIR__ . '/src',
     ]);
 
@@ -17,11 +16,10 @@ return $config->setFinder($finder)
     ->setRiskyAllowed(true)
     ->setRules([
         '@PER-CS' => true,
-        '@DoctrineAnnotation' => true,
         '@PhpCsFixer' => true,
         '@Symfony' => true,
         '@PHP83Migration' => true,
-        'attribute_empty_parentheses' => false,
+        'attribute_empty_parentheses' => true,
         'concat_space' => [
             'spacing' => 'one',
         ],
@@ -59,7 +57,12 @@ return $config->setFinder($finder)
         'no_trailing_whitespace_in_string' => true,
         'no_unused_imports' => true,
         'no_useless_sprintf' => true,
-        'nullable_type_declaration_for_default_null_value' => false,
+        'nullable_type_declaration' => [
+            'syntax' => 'union',
+        ],
+        'nullable_type_declaration_for_default_null_value' => [
+            'use_nullable_type_declaration' => true,
+        ],
         'ordered_class_elements' => [
             'order' => [
                 'use_trait',
