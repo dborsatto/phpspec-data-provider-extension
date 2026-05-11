@@ -1,3 +1,7 @@
+# Deprecation notice
+
+This library is no longer maintained. Sadly PHPSpec as a whole does not get much support any longer, a version 8.0 contained a breaking change that made this library not work anymore. For this is reason, you should considering moving from PHPSpec to PHPUnit.
+
 # PhpSpec data provider extension
 
 This extension allows you to create data providers for examples in specs. It is a fork of [madisoft/phpspec-data-provider-extension](https://github.com/madisoft/phpspec-data-provider-extension/tree/master), which is the final fork from a series started from [coduo/phpspec-data-provider-extension](https://github.com/coduo/phpspec-data-provider-extension). 
